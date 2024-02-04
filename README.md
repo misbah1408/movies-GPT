@@ -3,6 +3,18 @@
     Configured TailwindCSS
     Header
     Login form also a toggle features sign up
+    Routing
+    Form validation
+    useRef hooks
+    FireBase setup
+    depoyed
+    Create Auth
+    Added redux tools
+    Create SignUp User Account
+    Implement Sign In user Api
+    Created Redux Store with userSlice
+    Implemented Sign out
+    Update Profile I
 
 # Features
 - Login/Sign Up
