@@ -1,0 +1,12 @@
+import React from 'react'
+import { IMG_LINK } from '../utils/Constants'
+
+const MovieCard = ({poster_path}) => {
+  return (
+    <div >
+      <img className='rounded-lg' src={IMG_LINK + poster_path} alt="" />
+    </div>
+  )
+}
+
+export default MovieCard
