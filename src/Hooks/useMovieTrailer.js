@@ -3,6 +3,7 @@ import { API_OPTIONS } from "../utils/Constants";
 import { addTrailerVideo } from "../utils/movieSlice";
 import { useDispatch } from "react-redux";
 const useMovieTrailer = (movieId) => {
+  console.log(movieId)
     const dispatch = useDispatch();
     const getMovieVideo = async () => {
         const data = await fetch(

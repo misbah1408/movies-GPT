@@ -4,7 +4,7 @@ import { IMG_LINK } from '../utils/Constants'
 const MovieCard = ({poster_path}) => {
   return (
     <div >
-      <img className='rounded-lg' src={IMG_LINK + poster_path} alt="" />
+      <img className='rounded-sm border-gray-100 border-solid' src={IMG_LINK + poster_path} alt="" />
     </div>
   )
 }

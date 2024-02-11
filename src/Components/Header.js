@@ -6,10 +6,12 @@ import { signOut } from 'firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUser, removeUser } from '../utils/userSlice'
 import { onAuthStateChanged } from 'firebase/auth'
+import {toggleGptSearchView} from "../utils/gptSlice"
 
 const Header = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const showGptSearch = useSelector((store)=>store.gpt.showGptSearch)
 
   const user = useSelector((store)=>store.user)
   const handleSignOut = () => {
@@ -18,6 +20,10 @@ const Header = () => {
       const err = error;
     });
   }
+  const handleGPTsearch =() =>{
+    dispatch(toggleGptSearchView())
+  }
+
   useEffect(()=>{
      const unsubsribe = onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -36,6 +42,7 @@ const Header = () => {
     <div className='absolute  w-[100%] top-0  z-10 flex justify-between bg-gradient-to-b from-black'>
       <img  src={NET_LOGO} alt="logo" className='h-20 mx-28' />
       {user && <div className='flex mr-10 items-center gap-4'>
+        <button className='text-white rounded-md font-semibold bg-[#6bc0a9] px-5 py-2' onClick={handleGPTsearch}>{showGptSearch? "HomePage" : "GPT Search"}</button>
         <button className='text-white rounded-md font-semibold bg-[rgb(219,0,0)] px-5 py-2' onClick={handleSignOut}>Sign Out</button>
         <img className='rounded-full h-8' src={user.photoURL?user.photoURL: AVATAR} alt="" />
       </div>}

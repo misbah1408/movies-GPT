@@ -4,14 +4,31 @@ import { useSelector } from 'react-redux'
 
 const SecondarySection = () => {
   const movies = useSelector((store)=>store?.movies)
+  const nowPlayingMoviesID = movies.nowPlayingMovies?.map((id)=>id?.id);
+  const topRatedID = movies.topRated?.map((id)=>id?.id);
+  const popularMoviesID = movies.popularMovies?.map((id)=>id?.id);
+  const upcomingID = movies.upcoming?.map((id)=>id?.id);
+
   return (
     <div className=' absolute -mt-40 z-40'>
-      <MovieList title={"Now Playing"} movies={movies?.nowPlayingMovies}/>
-      <MovieList title={"Top Rated"} movies={movies?.topRated}/>
-      <MovieList title={"Popular"} movies={movies?.popularMovies}/>
-      <MovieList title={"Upcoming"} movies={movies?.upcoming}/>
+      <MovieList title={"Now Playing"} movies={movies?.nowPlayingMovies}  movieFimgId={nowPlayingMoviesID}/>
+      <MovieList title={"Top Rated"} movies={movies?.topRated}  movieFimgId={topRatedID}/>
+      <MovieList title={"Popular"} movies={movies?.popularMovies}  movieFimgId={popularMoviesID}/>
+      <MovieList title={"Upcoming"} movies={movies?.upcoming} movieFimgId={upcomingID}/>
     </div>
   )
 }
 
 export default SecondarySection
+
+
+
+
+  // console.log(nowPlayingMoviesID)
+  // console.log(topRatedID)
+  // console.log(popularMoviesID)
+  // console.log(upcomingID)
+
+  // const {nowPlayingMoviesID, topRatedID ,popularMoviesID, upcomingID} = moviesImgId;
+  // const landImg = movies?.id;
+  // console.log(landImg)
