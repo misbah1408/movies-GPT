@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { AVATAR, NET_LOGO } from '../utils/Constants'
+import { NET_LOGO } from '../utils/Constants'
 import { auth } from '../utils/fireBaseConfig';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
@@ -18,6 +18,7 @@ const Header = () => {
     signOut(auth).then(() => {
     }).catch((error) => {
       const err = error;
+      console.log(err)
     });
   }
   const handleGPTsearch =() =>{
@@ -44,7 +45,6 @@ const Header = () => {
       {user && <div className='flex mr-10 items-center gap-4'>
         <button className='text-white rounded-md font-semibold bg-[#6bc0a9] px-5 py-2' onClick={handleGPTsearch}>{showGptSearch? "HomePage" : "GPT Search"}</button>
         <button className='text-white rounded-md font-semibold bg-[rgb(219,0,0)] px-5 py-2' onClick={handleSignOut}>Sign Out</button>
-        <img className='rounded-full h-8' src={user.photoURL?user.photoURL: AVATAR} alt="" />
       </div>}
     </div>
   )

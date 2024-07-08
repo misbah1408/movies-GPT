@@ -20,15 +20,3 @@ const SecondarySection = () => {
 }
 
 export default SecondarySection
-
-
-
-
-  // console.log(nowPlayingMoviesID)
-  // console.log(topRatedID)
-  // console.log(popularMoviesID)
-  // console.log(upcomingID)
-
-  // const {nowPlayingMoviesID, topRatedID ,popularMoviesID, upcomingID} = moviesImgId;
-  // const landImg = movies?.id;
-  // console.log(landImg)
