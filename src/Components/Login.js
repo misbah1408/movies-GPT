@@ -2,7 +2,11 @@ import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { AVATAR, TOP_BG } from "../utils/Constants";
 import { checkValidData } from "../utils/validity";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { auth } from "../utils/fireBaseConfig";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
@@ -33,16 +37,24 @@ const Login = () => {
         .then((userCredential) => {
           const user = userCredential.user;
           updateProfile(user, {
-            displayName: name?.current?.value, photoURL: AVATAR
-          }).then(() => {
-            const {uid, email, displayName, photoURL} = auth.currentUser;
-            dispatch(addUser({uid: uid, email: email, displayName: displayName, photoURL: photoURL}))
-          }).catch((error) => {
-            // An error occurred
-            // ...
-          });
-         
-
+            displayName: name?.current?.value,
+            photoURL: AVATAR,
+          })
+            .then(() => {
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+            })
+            .catch((error) => {
+              // An error occurred
+              // ...
+            });
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -50,8 +62,11 @@ const Login = () => {
           setErrorMessage(errorCode + "-" + errorMessage);
         });
     } else {
-      signInWithEmailAndPassword(auth, email?.current?.value,
-        password?.current?.value)
+      signInWithEmailAndPassword(
+        auth,
+        email?.current?.value,
+        password?.current?.value
+      )
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
@@ -67,22 +82,23 @@ const Login = () => {
   const toggleLogin = () => {
     setIsSignIn(!isSignIn);
   };
+
   return (
-    <div>
+    <div className="min-h-screen overflow-hidden relative">
       <Header />
-      <div>
-        <div className=" relative">
+      <div className="center-div h-[100%]">
+        <div className="relative w-full h-h-dvh sm:h-h-dvh md:h-dvh">
           <img
             src={TOP_BG}
-            className="bg-gradient-to-t from-black brightness-50"
+            className="w-full h-full object-fill bg-gradient-to-t from-black brightness-50 hide-on-small"
             alt=""
           />
         </div>
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="absolute flex flex-col h-[35rem] w-[450px] py-12 px-16 mx-auto right-0 left-0 bg-[rgba(0,0,0,0.7)] rounded-xl top-32 gap-5"
+          className="absolute flex flex-col w-[90%] max-w-[450px] p-6 sm:p-8 md:p-12 mx-auto right-0 left-0 bg-[rgba(0,0,0,0.7)] rounded-xl top-20 md:top-32 gap-4 sm:gap-5"
         >
-          <span className="text-white font-semiboldbold text-4xl">
+          <span className="text-white font-semibold text-3xl md:text-4xl">
             {isSignIn ? "Sign In" : "Sign Up"}
           </span>
           {!isSignIn && (
@@ -90,24 +106,24 @@ const Login = () => {
               ref={name}
               type="text"
               placeholder="First Name"
-              className="h-6 w-[100%] rounded-sm py-7 px-4 placeholder:h-6 text-left p-4 bg-transparent border-solid border-gray-500 border-[1px] outline-none focus:text-white"
+              className="h-10 w-full rounded-sm py-2 px-4 bg-transparent border border-gray-500 outline-none text-white placeholder-gray-400"
             />
           )}
           <input
             ref={email}
             type="text"
             placeholder="Email address"
-            className="h-6 w-[100%] rounded-sm py-7 px-4 placeholder:h-6 text-left p-4 bg-transparent border-solid border-gray-500 border-[1px] outline-none focus:text-white"
+            className="h-10 w-full rounded-sm py-2 px-4 bg-transparent border border-gray-500 outline-none text-white placeholder-gray-400"
           />
           <input
             ref={password}
             type="password"
             placeholder="Password"
-            className="h-6 w-[100%] rounded-sm py-7 px-4 placeholder:h-6 text-left p-4 bg-transparent border-solid border-gray-500 border-[1px] outline-none focus:text-white"
+            className="h-10 w-full rounded-sm py-2 px-4 bg-transparent border border-gray-500 outline-none text-white placeholder-gray-400"
           />
           <span className="font-semibold text-red-500">{errorMessage}</span>
           <button
-            className="h-10 mt-5 text-white text-l rounded-md bg-[rgb(219,0,0)]"
+            className="h-10 mt-4 text-white text-lg rounded-md bg-[rgb(219,0,0)]"
             onClick={handleBtnClick}
           >
             {isSignIn ? "Sign In" : "Sign Up"}
