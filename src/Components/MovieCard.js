@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { IMG_LINK } from "../utils/Constants";
 
 const MovieCard = ({ movId, movImg, rate, movTitle }) => {
-  if(!movImg) return null;
-  if(rate <= 0.4) return null;
+  if (!movImg) return null;
+  if (rate <= 0.4) return null;
   // const [movie, setMovie] = React.useState({})
   // const [loading, setLoading] = React.useState(true)
   // const [error, setError] = React.useState(null)
@@ -20,13 +20,13 @@ const MovieCard = ({ movId, movImg, rate, movTitle }) => {
   //   fetchImg()
   // },[])
 
-  const roundedRate = Math.round(rate*10);
+  const roundedRate = Math.round(rate * 10);
 
   // Determine the color based on the rating
   const getRatingColor = (rating) => {
     if (rating <= 30) return "#FF3131";
     if (rating <= 60) return "#FFFF33";
-    if(rating >= 61) return "#39FF14";
+    if (rating >= 61) return "#39FF14";
   };
 
   const ratingColor = getRatingColor(roundedRate);
@@ -40,10 +40,18 @@ const MovieCard = ({ movId, movImg, rate, movTitle }) => {
           alt={movTitle}
         />
         <div
-          className={`absolute flex items-center justify-center h-[40px] w-[40px] bottom-1 ml-2 right-0 transform -translate-x-1/2 text-center text-white font-bold p-1 rounded-full bg-black border-[3px] text`}
-          style={{ borderColor: ratingColor }}
+          className={`absolute flex items-center justify-center h-[40px] w-[40px] bottom-1 ml-2 right-0 transform -translate-x-1/2 text-center text-white font-bold p-1 rounded-full bg-black  text`}
+          style={{
+            background: `conic-gradient(${ratingColor} ${roundedRate}%, #cccccc 0)`,
+            padding: "2px",
+          }}
         >
-          <p className={`rounded-full text-[13px] text-white flex`}>{roundedRate} <sup className="mt-3">%</sup> </p>
+          <div class="flex items-center justify-center h-full w-full bg-black rounded-full">
+            <p class="text-white text-sm font-bold">
+              {roundedRate}
+              <sup>%</sup>
+            </p>
+          </div>
         </div>
       </div>
       <div className="mt-2">
