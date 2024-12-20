@@ -49,6 +49,7 @@ const GptInput = () => {
       // console.log(movieArray);
       if (movieArray.length <= 1) {
         // console.log(movieArray.length)
+        setLoading(false);
         alert(text);
       } else {
         const movieData = await Promise.all(
