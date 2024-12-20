@@ -9,6 +9,7 @@ import MoviesSuggestion from "./MoviesSuggestion";
 const GptInput = () => {
   const searchText = useRef(null);
   const [name, setName] = useState(null);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const apiKey = process.env.REACT_APP_GEMINI_API_Key;
   const genAI = new GoogleGenerativeAI(apiKey);
@@ -37,6 +38,7 @@ const GptInput = () => {
     return json;
   };
   const handleSearch = async () => {
+    setLoading(true)
     const aiQuery = `Act as a Movie Recommendation system and suggest some movies for the query: ${searchText.current.value}. Only give me names of 5 movies, comma separated like the example result given ahead. Example: gadar, sholay, don, bahubali, jawan (if there is no movie then please give an error message with a few words and tell user a message) and include movie name form query`;
 
     try {
@@ -45,7 +47,6 @@ const GptInput = () => {
       const text = await response.text(); // Await the .text() method
       const movieArray = text.split(",").map((movie) => movie.trim());
       // console.log(movieArray);
-
       if (movieArray.length <= 1) {
         // console.log(movieArray.length)
         alert(text);
@@ -65,6 +66,7 @@ const GptInput = () => {
         dispatch(
           addGptMoviesResult({ movieNames: movieArray, movieResult: movieData })
         );
+        setLoading(false);
         setName(movieData.length);
       }
 
@@ -91,7 +93,14 @@ const GptInput = () => {
             className="bg-[rgb(219,0,0)] outline-none w-[10%] h-10 rounded-r-lg"
             onClick={handleSearch}
           >
-            <i className="fa-solid fa-magnifying-glass text-white"></i>
+            {loading ? (
+              <iframe
+                className="h-full w-full"
+                src="https://lottie.host/embed/2a43d657-d6a6-462e-8e8a-a4d9f85cc995/qSTl2ORp3I.lottie"
+              ></iframe>
+            ) : (
+              <i className="fa-solid fa-magnifying-glass text-white"></i>
+            )}
           </button>
         </form>
       </div>
