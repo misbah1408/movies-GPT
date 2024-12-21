@@ -46,8 +46,8 @@ const MovieCard = ({ movId, movImg, rate, movTitle }) => {
             padding: "2px",
           }}
         >
-          <div class="flex items-center justify-center h-full w-full bg-black rounded-full">
-            <p class="text-white text-sm font-bold">
+          <div className="flex items-center justify-center h-full w-full bg-black rounded-full">
+            <p className="text-white text-sm font-bold">
               {roundedRate}
               <sup>%</sup>
             </p>

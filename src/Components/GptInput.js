@@ -8,10 +8,11 @@ import MoviesSuggestion from "./MoviesSuggestion";
 
 const GptInput = () => {
   const searchText = useRef(null);
-  const [name, setName] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState(null);
   const dispatch = useDispatch();
   const apiKey = process.env.REACT_APP_GEMINI_API_Key;
+
   const genAI = new GoogleGenerativeAI(apiKey);
   const safetySetting = [
     {
@@ -23,97 +24,108 @@ const GptInput = () => {
       threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
     },
   ];
+
   const model = genAI.getGenerativeModel({
     model: "gemini-1.5-flash",
     safetySetting,
   });
+
   const getMovie = async (name) => {
-    const data = await fetch(
-      "https://api.themoviedb.org/3/search/movie?query=" +
-        name +
-        "&include_adult=false&language=en-US&page=1",
-      API_OPTIONS
-    );
-    const json = await data.json();
-    return json;
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/search/movie?query=${name}&include_adult=false&language=en-US&page=1`,
+        API_OPTIONS
+      );
+      if (!response.ok) throw new Error("Failed to fetch movie data");
+      return await response.json();
+    } catch (error) {
+      console.error(`Error fetching movie "${name}":`, error);
+      return null;
+    }
   };
+
   const handleSearch = async () => {
-    setLoading(true)
-    const aiQuery = `Act as a Movie Recommendation system and suggest some movies for the query: ${searchText.current.value}. Only give me names of 5 movies, comma separated like the example result given ahead. Example: gadar, sholay, don, bahubali, jawan (if there is no movie then please give an error message with a few words and tell user a message) and include movie name form query`;
+    if (!searchText.current || !searchText.current.value.trim()) {
+      alert("Please enter a search term.");
+      return;
+    }
+
+    setLoading(true);
+
+    const aiQuery = `Act as a Movie Recommendation system. Suggest 5 movie names based on the query: "${searchText.current.value}". Format the result as a comma-separated list (e.g., gadar, sholay, don, bahubali, jawan). If no movies match, respond with an error message and a user-friendly suggestion. Ensure the query movie name is included in the result if relevant. erroe message short with 5-6 words`;
 
     try {
       const result = await model.generateContent(aiQuery);
       const response = await result.response;
-      const text = await response.text(); // Await the .text() method
+      const text = await response.text();
+      // console.log(text);
+
       const movieArray = text.split(",").map((movie) => movie.trim());
-      // console.log(movieArray);
-      if (movieArray.length <= 1) {
-        // console.log(movieArray.length)
-        setLoading(false);
+      // console.log(movieArray)
+      // console.log(text.slice(0,5))
+      if (movieArray.length <= 1 || text.slice(0, 5) === "Error") {
         alert(text);
+        return;
       } else {
         const movieData = await Promise.all(
-          movieArray.map(async (name) => {
-            try {
-              return await getMovie(name);
-            } catch (error) {
-              console.error(`Error fetching data for movie ${name}:`, error);
-              return null;
-            }
+          movieArray.map((name) => getMovie(name))
+        );
+
+        dispatch(
+          addGptMoviesResult({
+            movieNames: movieArray,
+            movieResult: movieData.filter(Boolean), // Exclude null values
           })
         );
-
-        // console.log(movieData);
-        dispatch(
-          addGptMoviesResult({ movieNames: movieArray, movieResult: movieData })
-        );
-        setLoading(false);
         setName(movieData.length);
       }
-
-      // console.log(text);
     } catch (error) {
-      console.error(error);
+      console.error("Error during AI query or movie fetching:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="absolute top-[10rem] z-30 left-[50%] translate-x-[-50%] h-full w-full flex flex-col items-center md:m-auto">
-      <div className="h-[100%] w-[80%] ">
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          className=" h-10 md:w-[30%] flex md:m-auto w-full"
-        >
-          <input
-            ref={searchText}
-            className="md:bg-[rgba(0,0,0)] text-white h-10 w-[90%] border-none pl-7 outline-none rounded-l-lg border-2 border-white bg-[#47474779]"
-            type="text"
-            placeholder="What Do You Want Today?"
-          />
-          <button
-            className="bg-[rgb(219,0,0)] outline-none w-[10%] h-10 rounded-r-lg"
-            onClick={handleSearch}
+    <>
+      <div className="absolute top-[10rem] z-30 left-[50%] translate-x-[-50%] max-h-full w-full flex flex-col items-center md:m-auto">
+        <div className="max-h-full w-[80%]">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="h-10 md:w-[30%] flex md:m-auto w-full"
           >
-            {loading ? (
-              <iframe
-                className="h-full w-full"
-                src="https://lottie.host/embed/2a43d657-d6a6-462e-8e8a-a4d9f85cc995/qSTl2ORp3I.lottie"
-              ></iframe>
-            ) : (
-              <i className="fa-solid fa-magnifying-glass text-white"></i>
-            )}
-          </button>
-        </form>
-      </div>
-      <div className="md:m-auto h-[100%] w-[99%] md:my-5 my-8">
+            <input
+              ref={searchText}
+              className="md:bg-[rgba(0,0,0)] text-white h-10 w-[90%] border-none pl-7 outline-none rounded-l-lg border-2 border-white bg-[#47474779]"
+              type="text"
+              placeholder="What Do You Want Today?"
+            />
+            <button
+              className="bg-[rgb(219,0,0)] outline-none w-[10%] h-10 rounded-r-lg"
+              onClick={handleSearch}
+              title="Search movies"
+            >
+              {loading ? (
+                <i className="fa-solid fa-spinner fa-spin text-white"></i>
+              ) : (
+                <i className="fa-solid fa-magnifying-glass text-white"></i>
+              )}
+            </button>
+          </form>
+        </div>
         {name > 2 && (
-          <span className="md:text-3xl font-bold text-white text-2xl items-center ml-8">
-            Movie Recommendation
-          </span>
+          <div className="md:m-auto h-[100%] w-[99%] md:my-5 my-8">
+            {name > 2 && (
+              <div className="w-[100%] md:text-3xl font-bold text-white text-2xl items-center text-center ">
+                Movie Recommendations
+              </div>
+            )}
+            <MoviesSuggestion />
+          </div>
         )}
-        <MoviesSuggestion />
       </div>
-    </div>
+    </>
   );
 };
 
